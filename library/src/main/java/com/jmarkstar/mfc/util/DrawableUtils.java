@@ -10,7 +10,6 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 /**
  * Created by jmarkstar on 13/06/2017.
  */
-
 public class DrawableUtils {
 
     public static Drawable tint(Context context, @DrawableRes int drawableRes, int colorRes){
