@@ -1,111 +1,160 @@
 package com.jmarkstar.mfc;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.annotation.StringRes;
+import android.support.annotation.UiThread;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
+import com.jmarkstar.mfc.util.DrawableUtils;
 
 /**
- * Created by jmarkstar on 13/06/2017.
+ * Created by jmarkstar on 14/06/2017.
  */
-public class MfcDialog extends DialogFragment {
+public class MfcDialog extends Dialog {
 
-    private static final String DIALOG_FRAGMENT_TAG = "MfcDialog";
-    private static final String SETUP_TAG = "setup";
+    private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 1000;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
+
+    private Builder mBuilder;
 
     private TextView mTvTitle;
     private TextView mTvGalleryOption;
     private TextView mTvCameraOption;
 
-    private MfcSetup mSetup;
-
-    private static MfcDialog newInstance(MfcSetup setup){
-        MfcDialog dialog = new MfcDialog();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(SETUP_TAG, setup);
-        dialog.setArguments(bundle);
-        return dialog;
+    public MfcDialog(Builder builder) {
+        super(builder.context);
+        mBuilder = builder;
     }
 
-    public static MfcDialog build(MfcSetup mfcSetup){
-        return newInstance(mfcSetup);
-    }
-
-    /*Default settings*/
-    public static MfcDialog build(Context context){
-        return newInstance(new MfcSetup.Builder(context).build());
-    }
-
-    public MfcDialog show(AppCompatActivity activity){
-        return show(activity.getSupportFragmentManager());
-    }
-
-    public MfcDialog show(Fragment fragment){
-        return show(fragment.getChildFragmentManager());
-    }
-
-    private MfcDialog show(FragmentManager fragmentManager){
-        super.show(fragmentManager, DIALOG_FRAGMENT_TAG);
-        return this;
-    }
-
-    @Nullable @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.view_dialog, null, false);
-
-        onInitViews(view);
+    @Override protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.view_dialog);
+        onInitViews();
         onSetup();
-
-        return view;
     }
 
-    @NonNull @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        if(dialog.getWindow()!=null){
-            dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        }
-        return dialog;
-    }
+    private void onInitViews(){
+        mTvTitle = (TextView)findViewById(R.id.mfc_dialog_title);
+        mTvGalleryOption = (TextView)findViewById(R.id.mfc_gallery_option);
+        mTvCameraOption = (TextView)findViewById(R.id.mfc_camera_option);
+        mTvGalleryOption.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    if(ContextCompat.checkSelfPermission(getContext(),
+                            Manifest.permission.READ_EXTERNAL_STORAGE) !=
+                            PackageManager.PERMISSION_GRANTED){
+                        ActivityCompat.requestPermissions((Activity) mBuilder.context,
+                                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE);
+                    }else{
+                        openGallery();
+                    }
+                }else{
+                    openGallery();
+                }
+            }
+        });
+        mTvCameraOption.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View view) {
 
-    private void onInitViews(View root){
-        mTvTitle = (TextView)root.findViewById(R.id.mfc_dialog_title);
-        mTvGalleryOption = (TextView)root.findViewById(R.id.mfc_gallery_option);
-        mTvCameraOption = (TextView)root.findViewById(R.id.mfc_camera_option);
+            }
+        });
     }
 
     private void onSetup(){
-        if(getArguments()!=null){
-            mSetup = getArguments().getParcelable(SETUP_TAG);
+        int accentColor = ContextCompat.getColor(getContext(), mBuilder.accentColor);
+
+        mTvTitle.setText(mBuilder.dialogTitle);
+        mTvGalleryOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(getContext(),
+                mBuilder.dialogGalleryIcon, accentColor), null, null, null);
+
+        mTvCameraOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(getContext(),
+                mBuilder.dialogCameraIcon, accentColor), null, null, null);
+    }
+
+    private void openGallery(){
+        Intent intent = new Intent(getContext(), GalleryActivity.class);
+        getContext().startActivity(intent);
+    }
+
+    public static class Builder {
+
+        private Context context;
+        private int primaryColor;
+        private int primaryDarkColor;
+        private int accentColor;
+        private String dialogTitle;
+        private int dialogGalleryIcon;
+        private int dialogCameraIcon;
+
+        public Builder(@NonNull Context context){
+            this. context = context;
+            this.primaryColor = R.color.colorPrimary;
+            this.primaryDarkColor = R.color.colorPrimaryDark;
+            this.accentColor = R.color.colorAccent;
+            this.dialogTitle = context.getString(R.string.mfc_dialog_title);
+            this.dialogGalleryIcon = R.drawable.ic_media_library;
+            this.dialogCameraIcon = R.drawable.ic_camera;
         }
 
-        int accentColor = ContextCompat.getColor(getContext(), mSetup.getAccentColor());
+        public MfcDialog.Builder primaryColor(@ColorRes int color){
+            this.primaryColor = color;
+            return this;
+        }
 
-        Drawable galleryIcon = ContextCompat.getDrawable(getContext(), mSetup.getDialogGalleryIcon());
-        galleryIcon = DrawableCompat.wrap(galleryIcon);
-        DrawableCompat.setTint(galleryIcon, accentColor );
-        DrawableCompat.setTintMode(galleryIcon, PorterDuff.Mode.SRC_IN);
+        public MfcDialog.Builder primaryDarkColor(@ColorRes int color){
+            this.primaryDarkColor = color;
+            return this;
+        }
 
-        Drawable cameraIcon = ContextCompat.getDrawable(getContext(), mSetup.getDialogCameraIcon());
-        cameraIcon = DrawableCompat.wrap(cameraIcon);
-        DrawableCompat.setTint(cameraIcon, accentColor );
-        DrawableCompat.setTintMode(cameraIcon, PorterDuff.Mode.SRC_IN);
+        public MfcDialog.Builder accentColor(@ColorRes int color){
+            this.accentColor = color;
+            return this;
+        }
 
-        mTvTitle.setText(mSetup.getDialogTitle());
-        mTvGalleryOption.setCompoundDrawablesWithIntrinsicBounds(galleryIcon, null, null, null);
-        mTvCameraOption.setCompoundDrawablesWithIntrinsicBounds(cameraIcon, null, null, null);
+        public MfcDialog.Builder dialogTitle(String title){
+            this.dialogTitle = title;
+            return this;
+        }
+
+        public MfcDialog.Builder dialogTitle(@StringRes int title){
+            this.dialogTitle = context.getString(title);
+            return this;
+        }
+
+        public MfcDialog.Builder dialogGalleryIcon(@DrawableRes int icon){
+            this.dialogGalleryIcon = icon;
+            return this;
+        }
+
+        public MfcDialog.Builder dialogCameraIcon(@DrawableRes int icon){
+            this.dialogCameraIcon = icon;
+            return this;
+        }
+
+        @UiThread public MfcDialog build(){
+            return new MfcDialog(this);
+        }
+
+        @UiThread public MfcDialog show(){
+            MfcDialog dialog = build();
+            dialog.show();
+            return dialog;
+        }
     }
+
 }
