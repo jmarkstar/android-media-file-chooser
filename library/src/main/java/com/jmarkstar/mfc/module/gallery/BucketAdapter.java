@@ -7,11 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
 import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.Bucket;
-
 import java.util.List;
 
 /**
@@ -21,21 +19,35 @@ class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.BucketVH> {
 
     private Context mContext;
     private List<Bucket> mBuckets;
+    private OnBucketClickListener onBucketClickListener;
 
-    public BucketAdapter(Context mContext, List<Bucket> mBuckets) {
+    BucketAdapter(Context mContext, OnBucketClickListener onBucketClickListener) {
+        if(onBucketClickListener==null){
+            throw new NullPointerException("OnBucketClickListener can't be null");
+        }
         this.mContext = mContext;
+        this.onBucketClickListener = onBucketClickListener;
+    }
+
+    public void addBuckets(List<Bucket> mBuckets){
         this.mBuckets = mBuckets;
     }
 
     @Override public BucketVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_gallery_bucket_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_gallery_item_list, parent, false);
         return new BucketVH(view);
     }
 
     @Override public void onBindViewHolder(BucketVH holder, int position) {
-        Bucket bucket = mBuckets.get(position);
-        holder.tvBucketName.setText(bucket.getName());
-        Glide.with(mContext).load("file://"+bucket.getFirstImageContainedPath()).override(300,300).centerCrop().into(holder.ivFirstImage);
+        final Bucket bucket = mBuckets.get(position);
+        holder.tvName.setText(bucket.getName());
+        Glide.with(mContext).load("file://"+bucket.getFirstImageContainedPath()).override(300,300).centerCrop().into(holder.ivImage);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                if(onBucketClickListener!=null)
+                    onBucketClickListener.onItemClick(bucket);
+            }
+        });
     }
 
     @Override public int getItemCount() {
@@ -45,13 +57,17 @@ class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.BucketVH> {
 
     class BucketVH extends RecyclerView.ViewHolder {
 
-        ImageView ivFirstImage;
-        TextView tvBucketName;
+        ImageView ivImage;
+        TextView tvName;
 
-        public BucketVH(View itemView) {
+        BucketVH(View itemView) {
             super(itemView);
-            ivFirstImage = (ImageView)itemView.findViewById(R.id.iv_first_image);
-            tvBucketName = (TextView)itemView.findViewById(R.id.tv_bucket_name);
+            ivImage = (ImageView)itemView.findViewById(R.id.iv_image);
+            tvName = (TextView)itemView.findViewById(R.id.tv_name);
         }
+    }
+
+    interface OnBucketClickListener{
+        void onItemClick(Bucket bucket);
     }
 }

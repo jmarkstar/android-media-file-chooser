@@ -6,4 +6,8 @@
     <string name="dialog_video_option_text">Record Video</string>
     <string name="gallery_tab_images">Images</string>
     <string name="gallery_tab_videos">Videos</string>
+    <string name="gallery_select_images">Select Images</string>
+    <string name="gallery_select_videos">Select Videos</string>
+    <string name="gallery_done_all_action">DONE ALL</string>
+    <string name="gallery_done_action">DONE</string>
 </resources>

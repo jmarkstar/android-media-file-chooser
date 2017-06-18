@@ -9,8 +9,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.GalleryItemType;
@@ -37,6 +38,7 @@ public class GalleryActivity extends AppCompatActivity {
         mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
         mTlItemType = (TabLayout)findViewById(R.id.tl_itemtype);
         mVpItemType = (ViewPager)findViewById(R.id.vp_itemtype);
 
@@ -74,6 +76,21 @@ public class GalleryActivity extends AppCompatActivity {
         loadItemTypePagers();
     }
 
+    @Override public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_gallery_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.action_done_all){
+
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Override public void onBackPressed() {
         super.onBackPressed();
         finish();
@@ -83,8 +100,8 @@ public class GalleryActivity extends AppCompatActivity {
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_images)));
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_videos)));
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.IMAGE));
-        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.VIDEO));
+        fragments.add(ItemTypeFragment.newInstance(mBuilder, GalleryItemType.IMAGE));
+        fragments.add(ItemTypeFragment.newInstance(mBuilder, GalleryItemType.VIDEO));
         ItemTypeVpAdapter adapter = new ItemTypeVpAdapter(getSupportFragmentManager(), fragments);
         mVpItemType.setAdapter(adapter);
     }
