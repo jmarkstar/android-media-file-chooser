@@ -8,11 +8,12 @@
     tools:context="com.jmarkstar.mfc.MfcDialog">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/rl_dialog_content"
         android:layout_centerInParent="true"
-        android:layout_width="250dp"
-        android:layout_height="150dp"
-        android:minWidth="250dp"
-        android:minHeight="150dp"
+        android:layout_width="200dp"
+        android:layout_height="240dp"
+        android:minWidth="200dp"
+        android:minHeight="240dp"
         android:elevation="24dp"
         android:layout_gravity="center"
         android:background="@drawable/bg_dialog"
@@ -30,27 +31,36 @@
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:weightSum="1"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
             <TextView android:id="@+id/mfc_gallery_option"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:background="@drawable/bg_dialog_option_selector"
                 android:drawablePadding="10dp"
                 android:gravity="start|center_vertical"
                 android:textColor="@color/mfc_black"
                 android:text="@string/dialog_gallery_option_text" />
 
             <TextView android:id="@+id/mfc_camera_option"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
+                android:background="@drawable/bg_dialog_option_selector"
+                android:layout_marginTop="12dp"
                 android:drawablePadding="10dp"
                 android:gravity="start|center_vertical"
                 android:textColor="@color/mfc_black"
                 android:text="@string/dialog_camera_option_text" />
+
+            <TextView android:id="@+id/mfc_video_option"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_dialog_option_selector"
+                android:layout_marginTop="12dp"
+                android:drawablePadding="10dp"
+                android:gravity="start|center_vertical"
+                android:textColor="@color/mfc_black"
+                android:text="@string/dialog_video_option_text" />
 
         </LinearLayout>
 

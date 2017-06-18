@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 new MfcDialog.Builder(MainActivity.this).build();
+
+
             }
         });
     }

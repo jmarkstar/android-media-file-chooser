@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.jmarkstar.mfc.module.gallery.GalleryActivity;
 import com.jmarkstar.mfc.util.DrawableUtils;
 import com.jmarkstar.mfc.util.MfcUtils;
 
@@ -27,14 +29,16 @@ import com.jmarkstar.mfc.util.MfcUtils;
  */
 public class MfcDialog extends AppCompatActivity {
 
-    private static final String BUILDER_TAG = "builder";
+    public static final String BUILDER_TAG = "builder";
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 2000;
 
     private RelativeLayout mRlLayout;
+    private RelativeLayout mRlDialogContent;
     private TextView mTvTitle;
     private TextView mTvGalleryOption;
-    private TextView mTvCameraOption;
+    private TextView mTvTakePhotoOption;
+    private TextView mTvRecordVideoOption;
 
     private Builder mBuilder;
 
@@ -67,13 +71,18 @@ public class MfcDialog extends AppCompatActivity {
 
     private void onInitViews(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
-            MfcUtils.setStatusBarColor(this, mBuilder.primaryDarkColor);
+            MfcUtils.setStatusBarColor(this, android.R.color.transparent);
         }
 
+        mRlDialogContent = (RelativeLayout)findViewById(R.id.rl_dialog_content);
         mRlLayout = (RelativeLayout)findViewById(R.id.rl_layout);
         mTvTitle = (TextView)findViewById(R.id.mfc_dialog_title);
         mTvGalleryOption = (TextView)findViewById(R.id.mfc_gallery_option);
-        mTvCameraOption = (TextView)findViewById(R.id.mfc_camera_option);
+        mTvTakePhotoOption = (TextView)findViewById(R.id.mfc_camera_option);
+        mTvRecordVideoOption = (TextView)findViewById(R.id.mfc_video_option);
+        mRlDialogContent.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {/*empty action*/}
+        });
         mRlLayout.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onBackPressed();
@@ -96,8 +105,13 @@ public class MfcDialog extends AppCompatActivity {
                 }
             }
         });
-        mTvCameraOption.setOnClickListener(new View.OnClickListener() {
+        mTvTakePhotoOption.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View view) {
+
+            }
+        });
+        mTvRecordVideoOption.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
 
             }
         });
@@ -110,8 +124,11 @@ public class MfcDialog extends AppCompatActivity {
         mTvGalleryOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(this,
                 mBuilder.dialogGalleryIcon, accentColor), null, null, null);
 
-        mTvCameraOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(this,
+        mTvTakePhotoOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(this,
                 mBuilder.dialogCameraIcon, accentColor), null, null, null);
+
+        mTvRecordVideoOption.setCompoundDrawablesWithIntrinsicBounds( DrawableUtils.tint(this,
+                R.drawable.ic_video, accentColor), null, null, null);
     }
 
     private void openGallery(){
@@ -124,12 +141,12 @@ public class MfcDialog extends AppCompatActivity {
     public static class Builder implements Parcelable {
 
         private Context context;
-        private int primaryColor;
-        private int primaryDarkColor;
-        private int accentColor;
-        private String dialogTitle;
-        private int dialogGalleryIcon;
-        private int dialogCameraIcon;
+        public int primaryColor;
+        public int primaryDarkColor;
+        public int accentColor;
+        public String dialogTitle;
+        public int dialogGalleryIcon;
+        public int dialogCameraIcon;
 
         public Builder(@NonNull Context context){
             this. context = context;

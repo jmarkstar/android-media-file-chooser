@@ -2,5 +2,8 @@
     <string name="app_name">library</string>
     <string name="mfc_dialog_title">Choose</string>
     <string name="dialog_gallery_option_text">Gallery</string>
-    <string name="dialog_camera_option_text">Camera</string>
+    <string name="dialog_camera_option_text">Take Photo</string>
+    <string name="dialog_video_option_text">Record Video</string>
+    <string name="gallery_tab_images">Images</string>
+    <string name="gallery_tab_videos">Videos</string>
 </resources>
