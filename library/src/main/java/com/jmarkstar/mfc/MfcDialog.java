@@ -30,6 +30,12 @@ import com.jmarkstar.mfc.util.MfcUtils;
 public class MfcDialog extends AppCompatActivity {
 
     public static final String BUILDER_TAG = "builder";
+    public static final String SELECTED_GALLERY_ITEMS = "selected_items";
+    public static final String ITEM_TYPE = "item_type";
+    public static final String BUCKET_NAME = "bucket_name";
+
+    public static final int CHOOSE_GALLERY_ITEMS_REQUEST = 1991;
+
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 2000;
 

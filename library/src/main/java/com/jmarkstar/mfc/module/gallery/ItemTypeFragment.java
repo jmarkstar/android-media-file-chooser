@@ -1,6 +1,6 @@
 package com.jmarkstar.mfc.module.gallery;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.Bucket;
@@ -23,21 +22,29 @@ import java.util.List;
  */
 public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucketClickListener{
 
-    public static final String ITEM_TYPE = "item_type";
-    public static final String BUCKET_NAME = "bucket_name";
+    private static final String TAG = "ItemTypeFragment";
 
     private  RecyclerView mRvBuckets;
 
+    private OnOpenGalleryItemByBucket onOpenGalleryItemByBucket;
     private GalleryItemType itemType;
-    private MfcDialog.Builder mBuilder;
 
-    public static ItemTypeFragment newInstance(MfcDialog.Builder builder, GalleryItemType itemType){
+    public static ItemTypeFragment newInstance(GalleryItemType itemType){
         ItemTypeFragment fragment = new ItemTypeFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(ITEM_TYPE, itemType);
-        bundle.putParcelable(MfcDialog.BUILDER_TAG, builder);
+        bundle.putSerializable(MfcDialog.ITEM_TYPE, itemType);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override public void onAttach(Context context) {
+        super.onAttach(context);
+        try{
+            onOpenGalleryItemByBucket = (OnOpenGalleryItemByBucket)context;
+        }catch (ClassCastException ex){
+            throw new ClassCastException(context.toString()
+                    + " must implement OnOpenGalleryItemByBucket");
+        }
     }
 
     @Nullable @Override
@@ -46,10 +53,9 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
         mRvBuckets = (RecyclerView)viewRoot.findViewById(R.id.rv_buckets);
 
         if(getArguments()!=null){
-            itemType = (GalleryItemType) getArguments().get(ITEM_TYPE);
-            mBuilder = getArguments().getParcelable(MfcDialog.BUILDER_TAG);
+            itemType = (GalleryItemType) getArguments().get(MfcDialog.ITEM_TYPE);
         }
-        Log.v("fragment", "itemType = "+itemType);
+        Log.v(TAG, "itemType = "+itemType);
 
         return viewRoot;
     }
@@ -59,7 +65,7 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
 
         GalleryUtils galleryUtils = new GalleryUtils(getContext());
         List<Bucket> buckets = galleryUtils.getBucketsByItemType(itemType);
-        Log.v("fragment", "bucket size = "+buckets.size());
+        Log.v(TAG, "bucket size = "+buckets.size());
 
         BucketAdapter adapter = new BucketAdapter(getContext(), this);
         adapter.addBuckets(buckets);
@@ -71,10 +77,11 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
     }
 
     @Override public void onItemClick(Bucket bucket) {
-        Intent intent = new Intent(getContext(), GalleryItemActivity.class);
-        intent.putExtra(MfcDialog.BUILDER_TAG, mBuilder);
-        intent.putExtra(ITEM_TYPE, itemType);
-        intent.putExtra(BUCKET_NAME, bucket.getName());
-        startActivity(intent);
+        if(onOpenGalleryItemByBucket!=null)
+            onOpenGalleryItemByBucket.onGalleryItem(bucket, itemType);
+    }
+
+    interface OnOpenGalleryItemByBucket{
+        void onGalleryItem(Bucket bucket, GalleryItemType itemType);
     }
 }

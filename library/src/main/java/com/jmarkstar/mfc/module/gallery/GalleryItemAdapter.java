@@ -1,6 +1,7 @@
 package com.jmarkstar.mfc.module.gallery;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,14 +41,23 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.Gallery
 
     @Override public void onBindViewHolder(GalleryItemVH holder, int position) {
         final GalleryItem galleryItem = mGalleryItems.get(position);
-        holder.tvName.setText(galleryItem.getName());
-        Glide.with(mContext).load("file://"+galleryItem.getPath()).override(300,300).centerCrop().into(holder.ivImage);
+        Glide.with(mContext).load("file://"+galleryItem.getPathName()).override(300,300).centerCrop().into(holder.ivImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(onGalleryItemClickListener!=null)
                     onGalleryItemClickListener.onItemClick(galleryItem);
             }
         });
+        if(galleryItem.isSelected()){
+            holder.ivCheck.setVisibility(View.VISIBLE);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+                holder.ivCheck.setImageAlpha(120);
+            }else{
+                holder.ivCheck.setAlpha(120);
+            }
+        }else{
+            holder.ivCheck.setVisibility(View.GONE);
+        }
     }
 
     @Override public int getItemCount() {
@@ -58,12 +68,12 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.Gallery
     class GalleryItemVH extends RecyclerView.ViewHolder {
 
         ImageView ivImage;
-        TextView tvName;
+        ImageView ivCheck;
 
         GalleryItemVH(View itemView) {
             super(itemView);
             ivImage = (ImageView)itemView.findViewById(R.id.iv_image);
-            tvName = (TextView)itemView.findViewById(R.id.tv_name);
+            ivCheck = (ImageView)itemView.findViewById(R.id.iv_check);
         }
     }
 

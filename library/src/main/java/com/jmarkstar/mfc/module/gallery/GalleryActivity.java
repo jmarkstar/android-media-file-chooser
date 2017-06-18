@@ -1,5 +1,6 @@
 package com.jmarkstar.mfc.module.gallery;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
+import com.jmarkstar.mfc.model.Bucket;
+import com.jmarkstar.mfc.model.GalleryItem;
 import com.jmarkstar.mfc.model.GalleryItemType;
 import com.jmarkstar.mfc.util.MfcUtils;
 import java.util.ArrayList;
@@ -22,7 +25,10 @@ import java.util.List;
 /**
  * Created by jmarkstar on 14/06/2017.
  */
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends AppCompatActivity
+        implements ItemTypeFragment.OnOpenGalleryItemByBucket {
+
+    private static final String TAG = "GalleryActivity";
 
     private Toolbar mToolbar;
 
@@ -30,12 +36,14 @@ public class GalleryActivity extends AppCompatActivity {
     private ViewPager mVpItemType;
 
     private MfcDialog.Builder mBuilder;
+    private ArrayList<GalleryItem> selectedGalleryItems;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
         mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
+        selectedGalleryItems = new ArrayList<>();
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -54,7 +62,7 @@ public class GalleryActivity extends AppCompatActivity {
         mTlItemType.setBackgroundColor(primaryColor);
         mTlItemType.setSelectedTabIndicatorColor(accentColor);
 
-        mToolbar.setTitle(mBuilder.dialogTitle);
+        setTitle();
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -96,12 +104,36 @@ public class GalleryActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override public void onGalleryItem(Bucket bucket, GalleryItemType itemType) {
+        Intent intent = new Intent(this, GalleryItemActivity.class);
+        intent.putExtra(MfcDialog.BUILDER_TAG, mBuilder);
+        intent.putExtra(MfcDialog.ITEM_TYPE, itemType);
+        intent.putExtra(MfcDialog.BUCKET_NAME, bucket.getName());
+        intent.putParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS, selectedGalleryItems);
+        startActivityForResult(intent, MfcDialog.CHOOSE_GALLERY_ITEMS_REQUEST);
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == MfcDialog.CHOOSE_GALLERY_ITEMS_REQUEST && resultCode == RESULT_OK){
+            selectedGalleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
+            setTitle();
+        }
+    }
+
+    private void setTitle(){
+        if(selectedGalleryItems!=null && selectedGalleryItems.size()>0){
+            mToolbar.setTitle(String.valueOf(selectedGalleryItems.size()));
+        }else{
+            mToolbar.setTitle(mBuilder.dialogTitle);
+        }
+    }
+
     private void loadItemTypePagers(){
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_images)));
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_videos)));
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ItemTypeFragment.newInstance(mBuilder, GalleryItemType.IMAGE));
-        fragments.add(ItemTypeFragment.newInstance(mBuilder, GalleryItemType.VIDEO));
+        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.IMAGE));
+        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.VIDEO));
         ItemTypeVpAdapter adapter = new ItemTypeVpAdapter(getSupportFragmentManager(), fragments);
         mVpItemType.setAdapter(adapter);
     }

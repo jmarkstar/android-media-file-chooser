@@ -34,7 +34,7 @@ class BucketAdapter extends RecyclerView.Adapter<BucketAdapter.BucketVH> {
     }
 
     @Override public BucketVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_gallery_item_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_gallery_bucket, parent, false);
         return new BucketVH(view);
     }
 

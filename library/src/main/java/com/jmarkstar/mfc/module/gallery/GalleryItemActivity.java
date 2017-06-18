@@ -1,5 +1,7 @@
 package com.jmarkstar.mfc.module.gallery;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -17,23 +19,32 @@ import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.GalleryItem;
 import com.jmarkstar.mfc.model.GalleryItemType;
 import com.jmarkstar.mfc.util.MfcUtils;
+import java.util.ArrayList;
 import java.util.List;
 
-public class GalleryItemActivity extends AppCompatActivity implements GalleryItemAdapter.OnGalleryItemClickListener {
+/** @author jmarkstar
+ * */
+public class GalleryItemActivity extends AppCompatActivity
+        implements GalleryItemAdapter.OnGalleryItemClickListener {
+
+    private static final String TAG = "GalleryItemActivity";
 
     private Toolbar mToolbar;
     private RecyclerView mRvGalleryItems;
 
+    private GalleryItemAdapter mAdapter;
     private MfcDialog.Builder mBuilder;
     private GalleryItemType mType;
+    private ArrayList<GalleryItem> mSelectedGalleryItems;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_item);
 
         mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
-        mType = (GalleryItemType)getIntent().getSerializableExtra(ItemTypeFragment.ITEM_TYPE);
-        String bucketName = getIntent().getStringExtra(ItemTypeFragment.BUCKET_NAME);
+        mType = (GalleryItemType)getIntent().getSerializableExtra(MfcDialog.ITEM_TYPE);
+        mSelectedGalleryItems = getIntent().getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
+        String bucketName = getIntent().getStringExtra(MfcDialog.BUCKET_NAME);
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -46,12 +57,7 @@ public class GalleryItemActivity extends AppCompatActivity implements GalleryIte
         }
 
         mToolbar.setBackgroundColor(primaryColor);
-        if(mType == GalleryItemType.IMAGE){
-            mToolbar.setTitle(getString(R.string.gallery_select_images));
-        }else if(mType == GalleryItemType.VIDEO){
-            mToolbar.setTitle(getString(R.string.gallery_select_videos));
-        }
-
+        setTitle();
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -61,15 +67,27 @@ public class GalleryItemActivity extends AppCompatActivity implements GalleryIte
 
         GalleryUtils galleryUtils = new GalleryUtils(this);
         List<GalleryItem> galleryItems = galleryUtils.getGalleryItemsByBucket(bucketName, mType);
-        Log.v("fragment", "bucket size = "+galleryItems.size());
+        Log.v(TAG, "gallery items size = "+galleryItems.size());
 
-        GalleryItemAdapter adapter = new GalleryItemAdapter(this, this);
-        adapter.addGalleryItems(galleryItems);
+        mAdapter = new GalleryItemAdapter(this, this);
+        mAdapter.addGalleryItems(galleryItems);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 3);
         mRvGalleryItems.setLayoutManager(mLayoutManager);
         mRvGalleryItems.setItemAnimator(new DefaultItemAnimator());
-        mRvGalleryItems.setAdapter(adapter);
+        mRvGalleryItems.setAdapter(mAdapter);
+    }
+
+    private void setTitle(){
+        if(mSelectedGalleryItems != null && mSelectedGalleryItems.size()>0){
+            mToolbar.setTitle(String.valueOf(mSelectedGalleryItems.size()));
+        }else{
+            if(mType == GalleryItemType.IMAGE){
+                mToolbar.setTitle(getString(R.string.gallery_select_images));
+            }else if(mType == GalleryItemType.VIDEO){
+                mToolbar.setTitle(getString(R.string.gallery_select_videos));
+            }
+        }
     }
 
     @Override public boolean onCreateOptionsMenu(Menu menu) {
@@ -77,10 +95,12 @@ public class GalleryItemActivity extends AppCompatActivity implements GalleryIte
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_done){
-
+            Intent intent = getIntent();
+            intent.putParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS, mSelectedGalleryItems);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
             return true;
         }else{
             return super.onOptionsItemSelected(item);
@@ -93,6 +113,14 @@ public class GalleryItemActivity extends AppCompatActivity implements GalleryIte
     }
 
     @Override public void onItemClick(GalleryItem galleryItem) {
-
+        if(galleryItem.isSelected()){
+            galleryItem.setSelected(false);
+            mSelectedGalleryItems.remove(galleryItem);
+        }else{
+            galleryItem.setSelected(true);
+            mSelectedGalleryItems.add(galleryItem);
+        }
+        setTitle();
+        mAdapter.notifyDataSetChanged();
     }
 }
