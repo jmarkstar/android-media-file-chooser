@@ -69,4 +69,14 @@ public class GalleryItem implements Parcelable {
                 ", selected=" + selected +
                 '}';
     }
+
+    @Override public boolean equals(Object obj) {
+        if(obj instanceof GalleryItem){
+            GalleryItem objGalleryItem = (GalleryItem)obj;
+            if(this.pathName.equals(objGalleryItem.getPathName())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

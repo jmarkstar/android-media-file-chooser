@@ -47,7 +47,6 @@ public class GalleryItemActivity extends AppCompatActivity
         String bucketName = getIntent().getStringExtra(MfcDialog.BUCKET_NAME);
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
         mRvGalleryItems = (RecyclerView)findViewById(R.id.rv_gallery_items);
 
         int primaryColor = ContextCompat.getColor(this, mBuilder.primaryColor);
@@ -57,17 +56,27 @@ public class GalleryItemActivity extends AppCompatActivity
         }
 
         mToolbar.setBackgroundColor(primaryColor);
-        setTitle();
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onBackPressed();
             }
         });
+        setTitle();
+        setSupportActionBar(mToolbar);
 
         GalleryUtils galleryUtils = new GalleryUtils(this);
         List<GalleryItem> galleryItems = galleryUtils.getGalleryItemsByBucket(bucketName, mType);
         Log.v(TAG, "gallery items size = "+galleryItems.size());
+        Log.v(TAG, "selected items size = "+mSelectedGalleryItems.size());
+        for(GalleryItem selectedItem : mSelectedGalleryItems){
+            for(GalleryItem item: galleryItems){
+                if(selectedItem.getPathName().equals(item.getPathName())){
+                    item.setSelected(true);
+                    break;
+                }
+            }
+        }
 
         mAdapter = new GalleryItemAdapter(this, this);
         mAdapter.addGalleryItems(galleryItems);
@@ -79,7 +88,7 @@ public class GalleryItemActivity extends AppCompatActivity
     }
 
     private void setTitle(){
-        if(mSelectedGalleryItems != null && mSelectedGalleryItems.size()>0){
+        if(mSelectedGalleryItems!=null && mSelectedGalleryItems.size()>0){
             mToolbar.setTitle(String.valueOf(mSelectedGalleryItems.size()));
         }else{
             if(mType == GalleryItemType.IMAGE){
