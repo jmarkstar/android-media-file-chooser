@@ -1,5 +1,6 @@
 package com.jmarkstar.mfc.module.gallery;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,14 +37,14 @@ public class GalleryActivity extends AppCompatActivity
     private ViewPager mVpItemType;
 
     private MfcDialog.Builder mBuilder;
-    private ArrayList<GalleryItem> selectedGalleryItems;
+    private ArrayList<GalleryItem> mSelectedGalleryItems;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
         mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
-        selectedGalleryItems = new ArrayList<>();
+        mSelectedGalleryItems = new ArrayList<>();
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -89,10 +90,12 @@ public class GalleryActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_done_all){
-
+            Intent intent = getIntent();
+            intent.putParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS, mSelectedGalleryItems);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
             return true;
         }else{
             return super.onOptionsItemSelected(item);
@@ -109,20 +112,20 @@ public class GalleryActivity extends AppCompatActivity
         intent.putExtra(MfcDialog.BUILDER_TAG, mBuilder);
         intent.putExtra(MfcDialog.ITEM_TYPE, itemType);
         intent.putExtra(MfcDialog.BUCKET_NAME, bucket.getName());
-        intent.putParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS, selectedGalleryItems);
+        intent.putParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS, mSelectedGalleryItems);
         startActivityForResult(intent, MfcDialog.CHOOSE_GALLERY_ITEMS_REQUEST);
     }
 
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == MfcDialog.CHOOSE_GALLERY_ITEMS_REQUEST && resultCode == RESULT_OK){
-            selectedGalleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
+            mSelectedGalleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
             setTitle();
         }
     }
 
     private void setTitle(){
-        if(selectedGalleryItems!=null && selectedGalleryItems.size()>0){
-            mToolbar.setTitle(String.valueOf(selectedGalleryItems.size()));
+        if(mSelectedGalleryItems!=null && mSelectedGalleryItems.size()>0){
+            mToolbar.setTitle(String.valueOf(mSelectedGalleryItems.size()));
         }else{
             mToolbar.setTitle(mBuilder.dialogTitle);
         }

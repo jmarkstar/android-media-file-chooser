@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.annotation.UiThread;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class MfcDialog extends AppCompatActivity {
     public static final String BUCKET_NAME = "bucket_name";
 
     public static final int CHOOSE_GALLERY_ITEMS_REQUEST = 1991;
+    public static final int MFC_RESPONSE = 1994;
 
     private static final int READ_EXTERNAL_STORAGE_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 2000;
@@ -47,12 +49,14 @@ public class MfcDialog extends AppCompatActivity {
     private TextView mTvRecordVideoOption;
 
     private Builder mBuilder;
+    private static Context mClientContext;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mfc_dialog);
 
         mBuilder = getIntent().getParcelableExtra(BUILDER_TAG);
+
 
         onInitViews();
         onSetup();
@@ -138,9 +142,10 @@ public class MfcDialog extends AppCompatActivity {
     }
 
     private void openGallery(){
-        Intent intent = new Intent(this, GalleryActivity.class);
+        Intent intent = new Intent(mClientContext, GalleryActivity.class);
         intent.putExtra(BUILDER_TAG, mBuilder);
-        startActivity(intent);
+        ((FragmentActivity)mClientContext).startActivityForResult(intent, MFC_RESPONSE);
+        mClientContext = null;
         finish();
     }
 
@@ -155,7 +160,8 @@ public class MfcDialog extends AppCompatActivity {
         public int dialogCameraIcon;
 
         public Builder(@NonNull Context context){
-            this. context = context;
+            mClientContext = context;
+            this.context = context;
             this.primaryColor = R.color.colorPrimary;
             this.primaryDarkColor = R.color.colorPrimaryDark;
             this.accentColor = R.color.colorAccent;
