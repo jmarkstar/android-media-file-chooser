@@ -32,6 +32,9 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == MfcDialog.MFC_RESPONSE && resultCode == RESULT_OK){
             List<GalleryItem> galleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
             Log.v("MainActivity", "galleryItems size = "+galleryItems.size());
+            for(GalleryItem item : galleryItems){
+                Log.v("MainActivity", item.toString());
+            }
         }
     }
 }

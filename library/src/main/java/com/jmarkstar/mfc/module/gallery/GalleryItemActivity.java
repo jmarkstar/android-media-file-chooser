@@ -57,13 +57,13 @@ public class GalleryItemActivity extends AppCompatActivity
 
         mToolbar.setBackgroundColor(primaryColor);
         mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        setTitle();
+        setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 onBackPressed();
             }
         });
-        setTitle();
-        setSupportActionBar(mToolbar);
 
         GalleryUtils galleryUtils = new GalleryUtils(this);
         List<GalleryItem> galleryItems = galleryUtils.getGalleryItemsByBucket(bucketName, mType);

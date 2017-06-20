@@ -19,50 +19,62 @@
         android:background="@drawable/bg_dialog"
         android:padding="24dp">
 
-        <TextView android:id="@+id/mfc_dialog_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/secondary_text_light"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+        <ProgressBar android:id="@+id/pg_loading"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
-        <LinearLayout android:id="@+id/mfc_dialog_options_holder"
-            android:layout_below="@+id/mfc_dialog_title"
-            android:layout_marginTop="20dp"
+        <RelativeLayout android:id="@+id/rl_dialog_body"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <TextView android:id="@+id/mfc_gallery_option"
+            <TextView android:id="@+id/mfc_dialog_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/secondary_text_light"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout android:id="@+id/mfc_dialog_options_holder"
+                android:layout_below="@+id/mfc_dialog_title"
+                android:layout_marginTop="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_dialog_option_selector"
-                android:drawablePadding="10dp"
-                android:gravity="start|center_vertical"
-                android:textColor="@color/mfc_black"
-                android:text="@string/dialog_gallery_option_text" />
+                android:orientation="vertical">
 
-            <TextView android:id="@+id/mfc_camera_option"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_dialog_option_selector"
-                android:layout_marginTop="12dp"
-                android:drawablePadding="10dp"
-                android:gravity="start|center_vertical"
-                android:textColor="@color/mfc_black"
-                android:text="@string/dialog_camera_option_text" />
+                <TextView android:id="@+id/mfc_gallery_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_dialog_option_selector"
+                    android:drawablePadding="10dp"
+                    android:gravity="start|center_vertical"
+                    android:textColor="@color/mfc_black"
+                    android:text="@string/dialog_gallery_option_text" />
 
-            <TextView android:id="@+id/mfc_video_option"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_dialog_option_selector"
-                android:layout_marginTop="12dp"
-                android:drawablePadding="10dp"
-                android:gravity="start|center_vertical"
-                android:textColor="@color/mfc_black"
-                android:text="@string/dialog_video_option_text" />
+                <TextView android:id="@+id/mfc_camera_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_dialog_option_selector"
+                    android:layout_marginTop="12dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="start|center_vertical"
+                    android:textColor="@color/mfc_black"
+                    android:text="@string/dialog_camera_option_text" />
 
-        </LinearLayout>
+                <TextView android:id="@+id/mfc_video_option"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_dialog_option_selector"
+                    android:layout_marginTop="12dp"
+                    android:drawablePadding="10dp"
+                    android:gravity="start|center_vertical"
+                    android:textColor="@color/mfc_black"
+                    android:text="@string/dialog_video_option_text" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
