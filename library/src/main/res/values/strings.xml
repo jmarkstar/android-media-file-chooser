@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">library</string>
+    <string name="app_name">mfc_files</string>
     <string name="mfc_dialog_title">Choose</string>
     <string name="dialog_gallery_option_text">Gallery</string>
     <string name="dialog_camera_option_text">Take Photo</string>

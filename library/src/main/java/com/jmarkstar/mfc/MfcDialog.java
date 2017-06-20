@@ -36,10 +36,9 @@ import com.jmarkstar.mfc.model.GalleryItemType;
 import com.jmarkstar.mfc.module.gallery.GalleryActivity;
 import com.jmarkstar.mfc.util.DrawableUtils;
 import com.jmarkstar.mfc.util.MfcUtils;
-import com.jmarkstar.mfc.util.TakePhotoUtils;
+import com.jmarkstar.mfc.util.MediaUtils;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by jmarkstar on 14/06/2017.
@@ -120,8 +119,7 @@ public class MfcDialog extends AppCompatActivity {
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
             new AsyncTask<Void, Void, Boolean>(){
 
-                @Override
-                protected void onPreExecute() {
+                @Override protected void onPreExecute() {
                     super.onPreExecute();
                     mPgLoaging.setVisibility(View.VISIBLE);
                     mRlDialogBody.setVisibility(View.GONE);
@@ -129,9 +127,10 @@ public class MfcDialog extends AppCompatActivity {
 
                 @Override protected Boolean doInBackground(Void... params) {
                     try{
-                        Bitmap bitmap = TakePhotoUtils.setReducedImageSize(300, 600, mImageFileLocation);
-                        bitmap = TakePhotoUtils.rotateBitmap(bitmap, mImageFileLocation);
-                        TakePhotoUtils.storeBitmap(bitmap, mImageFileLocation);
+                        Bitmap bitmap = MediaUtils.setReducedImageSize(mBuilder.photoBitmapWidth,
+                                mBuilder.photoBitmapHeigth, mImageFileLocation);
+                        bitmap = MediaUtils.rotateBitmap(bitmap, mImageFileLocation);
+                        MediaUtils.storeBitmap(bitmap, mImageFileLocation);
                         return true;
                     }catch(Exception ex){
                         ex.printStackTrace();
@@ -153,6 +152,10 @@ public class MfcDialog extends AppCompatActivity {
                         finish();
                     }else{
                         Toast.makeText(MfcDialog.this, "Ocurrio un error al guardar la foto.", Toast.LENGTH_SHORT).show();
+                        File photoError = new File(mImageFileLocation);
+                        if(photoError.exists()){
+                            photoError.delete();
+                        }
                     }
                     mPgLoaging.setVisibility(View.GONE);
                     mRlDialogBody.setVisibility(View.VISIBLE);
@@ -293,12 +296,10 @@ public class MfcDialog extends AppCompatActivity {
     }
 
     private void takePicture(){
-        Log.v("TP", "takePicture");
         Intent intent = new Intent();
         intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-        mImageFileLocation = TakePhotoUtils.createImageFile();
+        mImageFileLocation = MediaUtils.createImageFile(getString(mBuilder.folderName));
         if(mImageFileLocation!=null){
-            Log.v("TP", "takePicture into");
             File photoFile = new File(mImageFileLocation);
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -314,18 +315,21 @@ public class MfcDialog extends AppCompatActivity {
     private void recordVideo(){
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         if (takeVideoIntent.resolveActivity(getPackageManager()) != null) {
-            takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
+            takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, mBuilder.videoDuration);
 
-            File videFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES)+"/videocapture_example.mp4");
-            mVideoFileLocation = videFile.getAbsolutePath();
-            Uri uri;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", videFile);
-            } else {
-                uri = Uri.fromFile(videFile);
+            mVideoFileLocation = MediaUtils.createVideoFile(getString(mBuilder.folderName));
+            if(mVideoFileLocation!=null){
+                File videFile = new File(mVideoFileLocation);
+                Uri uri;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", videFile);
+                } else {
+                    uri = Uri.fromFile(videFile);
+                }
+                takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                startActivityForResult(takeVideoIntent, RECORD_VIDEO_REQUEST);
             }
-            takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-            startActivityForResult(takeVideoIntent, RECORD_VIDEO_REQUEST);
         }
     }
 
@@ -338,6 +342,10 @@ public class MfcDialog extends AppCompatActivity {
         public String dialogTitle;
         public int dialogGalleryIcon;
         public int dialogCameraIcon;
+        public int videoDuration;
+        public int photoBitmapWidth;
+        public int photoBitmapHeigth;
+        public int folderName;
 
         public Builder(@NonNull Context context){
             mClientContext = context;
@@ -348,6 +356,26 @@ public class MfcDialog extends AppCompatActivity {
             this.dialogTitle = context.getString(R.string.mfc_dialog_title);
             this.dialogGalleryIcon = R.drawable.ic_media_library;
             this.dialogCameraIcon = R.drawable.ic_camera;
+            this.videoDuration = 10;
+            this.photoBitmapWidth = 300;
+            this.photoBitmapHeigth = 600;
+            this.folderName = R.string.app_name;
+        }
+
+        public Builder appName(@StringRes int folderName){
+            this.folderName = folderName;
+            return this;
+        }
+
+        public Builder photoSizes(int width, int heigth){
+            this.photoBitmapWidth = width;
+            this.photoBitmapHeigth = heigth;
+            return this;
+        }
+
+        public Builder videoDuration(int seconds){
+            this.videoDuration = seconds;
+            return this;
         }
 
         public Builder primaryColor(@ColorRes int color){
@@ -391,6 +419,7 @@ public class MfcDialog extends AppCompatActivity {
             ((FragmentActivity)context).startActivityForResult(intent, MFC_RESPONSE);
         }
 
+
         @Override public int describeContents() {
             return 0;
         }
@@ -402,6 +431,10 @@ public class MfcDialog extends AppCompatActivity {
             dest.writeString(this.dialogTitle);
             dest.writeInt(this.dialogGalleryIcon);
             dest.writeInt(this.dialogCameraIcon);
+            dest.writeInt(this.videoDuration);
+            dest.writeInt(this.photoBitmapWidth);
+            dest.writeInt(this.photoBitmapHeigth);
+            dest.writeInt(this.folderName);
         }
 
         protected Builder(Parcel in) {
@@ -411,9 +444,13 @@ public class MfcDialog extends AppCompatActivity {
             this.dialogTitle = in.readString();
             this.dialogGalleryIcon = in.readInt();
             this.dialogCameraIcon = in.readInt();
+            this.videoDuration = in.readInt();
+            this.photoBitmapWidth = in.readInt();
+            this.photoBitmapHeigth = in.readInt();
+            this.folderName = in.readInt();
         }
 
-        public static final Parcelable.Creator<Builder> CREATOR = new Parcelable.Creator<Builder>() {
+        public static final Creator<Builder> CREATOR = new Creator<Builder>() {
             @Override public Builder createFromParcel(Parcel source) {
                 return new Builder(source);
             }

@@ -20,18 +20,57 @@ import java.util.Locale;
 /**
  * Created by jmarkstar on 06/03/2017.
  */
-public class TakePhotoUtils {
+public class MediaUtils {
 
     /**
      * @return path
      * */
-    public static String createImageFile() {
+    public static String createImageFile(String rootFolder) {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "IMG_"+ timeStamp;
-        File storageDirectory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         try {
-            File image = File.createTempFile(imageFileName, ".png", storageDirectory);
+            File appFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+
+                    File.separator+
+                    rootFolder);
+            if(!appFolder.exists()){
+                appFolder.mkdirs();
+            }
+
+            File imageFolder = new File(appFolder+
+                    File.separator+
+                    "Images");
+            if(!imageFolder.exists()){
+                imageFolder.mkdirs();
+            }
+
+            File image = File.createTempFile(imageFileName, ".png", imageFolder);
             return image.getAbsolutePath();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public static String createVideoFile(String rootFolder) {
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+        String videoFileName = "V_"+ timeStamp;
+        try {
+            File appFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+
+                    File.separator+
+                    rootFolder);
+            if(!appFolder.exists()){
+                appFolder.mkdirs();
+            }
+
+            File videosFolder = new File(appFolder+
+                    File.separator+
+                    "Videos");
+            if(!videosFolder.exists()){
+                videosFolder.mkdirs();
+            }
+
+            File video = File.createTempFile(videoFileName, ".mp4", videosFolder);
+            return video.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
             return null;
