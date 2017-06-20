@@ -215,8 +215,8 @@ public class MfcDialog extends AppCompatActivity {
             @Override public void onClick(View view) {
                 Log.v("TP", "takePicture click");
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    boolean readExternalStogeIsGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-                    boolean cameraIdGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED;
+                    boolean readExternalStogeIsGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraIdGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
                     if(!readExternalStogeIsGranted || !cameraIdGranted) {
                         String askPermissions [];
                         if(!readExternalStogeIsGranted && !cameraIdGranted){
@@ -227,7 +227,7 @@ public class MfcDialog extends AppCompatActivity {
                             askPermissions = new String[1];
                             if(!readExternalStogeIsGranted)
                                 askPermissions[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-                            else
+                            if(!cameraIdGranted)
                                 askPermissions[0] = Manifest.permission.CAMERA;
                         }
                         ActivityCompat.requestPermissions(MfcDialog.this,
@@ -243,8 +243,8 @@ public class MfcDialog extends AppCompatActivity {
         mTvRecordVideoOption.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-                    boolean readExternalStogeIsGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED;
-                    boolean cameraIdGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED;
+                    boolean readExternalStogeIsGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraIdGranted = ContextCompat.checkSelfPermission(MfcDialog.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
                     if(!readExternalStogeIsGranted || !cameraIdGranted) {
                         String askPermissions [];
                         if(!readExternalStogeIsGranted && !cameraIdGranted){
@@ -255,7 +255,7 @@ public class MfcDialog extends AppCompatActivity {
                             askPermissions = new String[1];
                             if(!readExternalStogeIsGranted)
                                 askPermissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
-                            else
+                            if(!cameraIdGranted)
                                 askPermissions[0] = Manifest.permission.CAMERA;
                         }
                         ActivityCompat.requestPermissions(MfcDialog.this,
