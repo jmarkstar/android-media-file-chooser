@@ -1,4 +1,7 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.jmarkstar'
 
 android {
     compileSdkVersion 25
@@ -8,7 +11,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 25
         versionCode 1
-        versionName "0.0.1.alpha"
+        versionName "0.1.0.alpha"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
