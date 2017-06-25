@@ -24,17 +24,3 @@ dependencies {
     compile 'com.github.jmarkstar:android-media-file-chooser:0.1.0.alpha'
  }
  ```
-
-Step 3. Add this provider on your AndroidManifest.xml.
-
-```xml
-<provider
-    android:name="android.support.v4.content.FileProvider"
-    android:authorities="${applicationId}.provider"
-    android:exported="false"
-    android:grantUriPermissions="true">
-    <meta-data
-        android:name="android.support.FILE_PROVIDER_PATHS"
-        android:resource="@xml/provider_paths"/>
-</provider>
-```
