@@ -21,9 +21,8 @@ public class MainActivity extends AppCompatActivity {
         TextView textView = (TextView)findViewById(R.id.tv_text);
         textView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                new MfcDialog.Builder(MainActivity.this).build();
-
-
+                new MfcDialog.Builder(MainActivity.this)
+                        .build();
             }
         });
     }

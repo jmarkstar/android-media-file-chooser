@@ -303,7 +303,7 @@ public class MfcDialog extends AppCompatActivity {
             File photoFile = new File(mImageFileLocation);
             Uri uri;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", photoFile);
+                uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".mfc.provider", photoFile);
             } else {
                 uri = Uri.fromFile(photoFile);
             }
@@ -322,7 +322,7 @@ public class MfcDialog extends AppCompatActivity {
                 File videFile = new File(mVideoFileLocation);
                 Uri uri;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".provider", videFile);
+                    uri = FileProvider.getUriForFile(this, getApplicationContext().getPackageName() + ".mfc.provider", videFile);
                 } else {
                     uri = Uri.fromFile(videFile);
                 }

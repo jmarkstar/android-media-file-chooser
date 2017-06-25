@@ -10,6 +10,16 @@
 
     <application>
 
+        <provider
+            android:name="com.jmarkstar.mfc.util.MfcFileProvider"
+            android:authorities="${applicationId}.mfc.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
         <activity android:screenOrientation="portrait"
             android:name=".MfcDialog"
             android:theme="@style/Theme.Transparent" />
