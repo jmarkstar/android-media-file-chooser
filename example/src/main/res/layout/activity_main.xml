@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/gray_300"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.jmarkstar.mfcexample.MainActivity">
 
-    <TextView android:id="@+id/tv_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="12dp"
-        android:background="@color/colorAccent"
-        android:textColor="@color/mfc_white"
-        android:text="Open Dialog!"
-        android:layout_centerInParent="true"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
 
-</RelativeLayout>
+        <TextView android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/mfc_white"
+            android:text="Open Dialog from Activity!"
+            android:layout_centerInParent="true"/>
+
+    </RelativeLayout>
+
+    <fragment android:id="@+id/f_fragment"
+        android:tag="fragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        android:name="com.jmarkstar.mfcexample.MainFragment"
+        tools:layout="@layout/fragment_main" />
+
+</LinearLayout>

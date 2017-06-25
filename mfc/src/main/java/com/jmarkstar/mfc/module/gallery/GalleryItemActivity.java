@@ -41,7 +41,7 @@ public class GalleryItemActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_item);
 
-        mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
+        mBuilder = (MfcDialog.Builder)getIntent().getSerializableExtra(MfcDialog.BUILDER_TAG);
         mType = (GalleryItemType)getIntent().getSerializableExtra(MfcDialog.ITEM_TYPE);
         mSelectedGalleryItems = getIntent().getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
         String bucketName = getIntent().getStringExtra(MfcDialog.BUCKET_NAME);

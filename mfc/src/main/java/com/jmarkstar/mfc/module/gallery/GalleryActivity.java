@@ -43,7 +43,7 @@ public class GalleryActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        mBuilder = getIntent().getParcelableExtra(MfcDialog.BUILDER_TAG);
+        mBuilder = (MfcDialog.Builder)getIntent().getSerializableExtra(MfcDialog.BUILDER_TAG);
         mSelectedGalleryItems = new ArrayList<>();
 
         mToolbar = (Toolbar)findViewById(R.id.toolbar);
