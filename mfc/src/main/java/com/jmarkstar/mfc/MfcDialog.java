@@ -25,8 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.jmarkstar.mfc.model.GalleryItem;
-import com.jmarkstar.mfc.model.GalleryItemType;
+import com.jmarkstar.mfc.model.MediaFile;
+import com.jmarkstar.mfc.model.MediaFileType;
 import com.jmarkstar.mfc.module.gallery.GalleryActivity;
 import com.jmarkstar.mfc.util.DrawableUtils;
 import com.jmarkstar.mfc.util.MfcUtils;
@@ -113,14 +113,14 @@ public class MfcDialog extends AppCompatActivity {
         if (requestCode == TAKE_PHOTO_REQUEST && resultCode == RESULT_OK) {
             new GetPhotoTask().execute();
         }else if (requestCode == RECORD_VIDEO_REQUEST && resultCode == RESULT_OK) {
-            GalleryItem item = new GalleryItem(mVideoFileLocation, GalleryItemType.VIDEO);
-            ArrayList<GalleryItem> items = new ArrayList<>();
+            MediaFile item = new MediaFile(mVideoFileLocation, MediaFileType.VIDEO);
+            ArrayList<MediaFile> items = new ArrayList<>();
             items.add(item);
             if(mBuilder.onMfcResultListener !=null)
                 mBuilder.onMfcResultListener.onMfcResult(items);
             finish();
         } else if(requestCode == CHOOSE_GALLERY_ITEMS_REQUEST && resultCode == RESULT_OK){
-            List<GalleryItem> galleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
+            List<MediaFile> galleryItems = data.getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
             if(mBuilder.onMfcResultListener !=null)
             mBuilder.onMfcResultListener.onMfcResult(galleryItems);
             finish();
@@ -375,7 +375,7 @@ public class MfcDialog extends AppCompatActivity {
     }
 
     public interface OnMfcResultListener extends Serializable{
-        void onMfcResult(List<GalleryItem> items);
+        void onMfcResult(List<MediaFile> items);
     }
 
     private class GetPhotoTask extends AsyncTask<Void, Void, Boolean>{
@@ -401,8 +401,8 @@ public class MfcDialog extends AppCompatActivity {
         @Override protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
             if(success){
-                GalleryItem item = new GalleryItem(mImageFileLocation, GalleryItemType.IMAGE);
-                ArrayList<GalleryItem> items = new ArrayList<>();
+                MediaFile item = new MediaFile(mImageFileLocation, MediaFileType.IMAGE);
+                ArrayList<MediaFile> items = new ArrayList<>();
                 items.add(item);
                 if(mBuilder.onMfcResultListener !=null)
                     mBuilder.onMfcResultListener.onMfcResult(items);

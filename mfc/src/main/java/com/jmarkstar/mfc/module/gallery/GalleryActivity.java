@@ -17,8 +17,8 @@ import android.view.View;
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.Bucket;
-import com.jmarkstar.mfc.model.GalleryItem;
-import com.jmarkstar.mfc.model.GalleryItemType;
+import com.jmarkstar.mfc.model.MediaFile;
+import com.jmarkstar.mfc.model.MediaFileType;
 import com.jmarkstar.mfc.util.MfcUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,7 @@ public class GalleryActivity extends AppCompatActivity
     private ViewPager mVpItemType;
 
     private MfcDialog.Builder mBuilder;
-    private ArrayList<GalleryItem> mSelectedGalleryItems;
+    private ArrayList<MediaFile> mSelectedGalleryItems;
 
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +107,7 @@ public class GalleryActivity extends AppCompatActivity
         finish();
     }
 
-    @Override public void onGalleryItem(Bucket bucket, GalleryItemType itemType) {
+    @Override public void onGalleryItem(Bucket bucket, MediaFileType itemType) {
         Intent intent = new Intent(this, GalleryItemActivity.class);
         intent.putExtra(MfcDialog.BUILDER_TAG, mBuilder);
         intent.putExtra(MfcDialog.ITEM_TYPE, itemType);
@@ -135,8 +135,8 @@ public class GalleryActivity extends AppCompatActivity
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_images)));
         mTlItemType.addTab(mTlItemType.newTab().setText(getString(R.string.gallery_tab_videos)));
         List<Fragment> fragments = new ArrayList<>();
-        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.IMAGE));
-        fragments.add(ItemTypeFragment.newInstance(GalleryItemType.VIDEO));
+        fragments.add(ItemTypeFragment.newInstance(MediaFileType.IMAGE));
+        fragments.add(ItemTypeFragment.newInstance(MediaFileType.VIDEO));
         ItemTypeVpAdapter adapter = new ItemTypeVpAdapter(getSupportFragmentManager(), fragments);
         mVpItemType.setAdapter(adapter);
     }

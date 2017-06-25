@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
 import com.jmarkstar.mfc.model.Bucket;
-import com.jmarkstar.mfc.model.GalleryItemType;
+import com.jmarkstar.mfc.model.MediaFileType;
 import java.util.List;
 
 /**
@@ -27,9 +27,9 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
     private  RecyclerView mRvBuckets;
 
     private OnOpenGalleryItemByBucket onOpenGalleryItemByBucket;
-    private GalleryItemType itemType;
+    private MediaFileType itemType;
 
-    public static ItemTypeFragment newInstance(GalleryItemType itemType){
+    public static ItemTypeFragment newInstance(MediaFileType itemType){
         ItemTypeFragment fragment = new ItemTypeFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(MfcDialog.ITEM_TYPE, itemType);
@@ -53,7 +53,7 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
         mRvBuckets = (RecyclerView)viewRoot.findViewById(R.id.rv_buckets);
 
         if(getArguments()!=null){
-            itemType = (GalleryItemType) getArguments().get(MfcDialog.ITEM_TYPE);
+            itemType = (MediaFileType) getArguments().get(MfcDialog.ITEM_TYPE);
         }
         Log.v(TAG, "itemType = "+itemType);
 
@@ -82,6 +82,6 @@ public class ItemTypeFragment extends Fragment implements BucketAdapter.OnBucket
     }
 
     interface OnOpenGalleryItemByBucket{
-        void onGalleryItem(Bucket bucket, GalleryItemType itemType);
+        void onGalleryItem(Bucket bucket, MediaFileType itemType);
     }
 }

@@ -6,7 +6,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.jmarkstar.mfc.MfcDialog;
-import com.jmarkstar.mfc.model.GalleryItem;
+import com.jmarkstar.mfc.model.MediaFile;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements MfcDialog.OnMfcResultListener {
@@ -26,9 +27,9 @@ public class MainActivity extends AppCompatActivity implements MfcDialog.OnMfcRe
         });
     }
 
-    @Override public void onMfcResult(List<GalleryItem> items) {
+    @Override public void onMfcResult(List<MediaFile> items) {
         Log.v(TAG, "items size = "+items.size());
-        for(GalleryItem item : items){
+        for(MediaFile item : items){
             Log.v(TAG, item.toString());
         }
     }

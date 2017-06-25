@@ -7,22 +7,22 @@ import android.support.annotation.NonNull;
 /**
  * Created by jmarkstar on 17/06/2017.
  */
-public class GalleryItem implements Parcelable {
+public class MediaFile implements Parcelable {
 
     private String pathName;
-    private GalleryItemType itemType;
+    private MediaFileType itemType;
     private boolean selected;
 
-    public GalleryItem(@NonNull String pathName, @NonNull GalleryItemType itemType) {
+    public MediaFile(@NonNull String pathName, @NonNull MediaFileType itemType) {
         this.itemType = itemType;
         this.pathName = pathName;
         this.selected = false;
     }
 
-    public GalleryItem(Parcel in) {
+    public MediaFile(Parcel in) {
         this.pathName = in.readString();
         int tmpItemType = in.readInt();
-        this.itemType = tmpItemType == -1 ? null : GalleryItemType.values()[tmpItemType];
+        this.itemType = tmpItemType == -1 ? null : MediaFileType.values()[tmpItemType];
         this.selected = in.readByte() != 0;
     }
 
@@ -30,7 +30,7 @@ public class GalleryItem implements Parcelable {
         return pathName;
     }
 
-    public GalleryItemType getItemType() {
+    public MediaFileType getItemType() {
         return itemType;
     }
 
@@ -52,18 +52,18 @@ public class GalleryItem implements Parcelable {
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
 
-    public static final Parcelable.Creator<GalleryItem> CREATOR = new Parcelable.Creator<GalleryItem>() {
-        @Override public GalleryItem createFromParcel(Parcel source) {
-            return new GalleryItem(source);
+    public static final Parcelable.Creator<MediaFile> CREATOR = new Parcelable.Creator<MediaFile>() {
+        @Override public MediaFile createFromParcel(Parcel source) {
+            return new MediaFile(source);
         }
 
-        @Override public GalleryItem[] newArray(int size) {
-            return new GalleryItem[size];
+        @Override public MediaFile[] newArray(int size) {
+            return new MediaFile[size];
         }
     };
 
     @Override public String toString() {
-        return "GalleryItem{" +
+        return "MediaFile{" +
                 "pathName='" + pathName + '\'' +
                 ", itemType=" + itemType +
                 ", selected=" + selected +
@@ -71,8 +71,8 @@ public class GalleryItem implements Parcelable {
     }
 
     @Override public boolean equals(Object obj) {
-        if(obj instanceof GalleryItem){
-            GalleryItem objGalleryItem = (GalleryItem)obj;
+        if(obj instanceof MediaFile){
+            MediaFile objGalleryItem = (MediaFile)obj;
             if(this.pathName.equals(objGalleryItem.getPathName())){
                 return true;
             }

@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import com.jmarkstar.mfc.model.Bucket;
-import com.jmarkstar.mfc.model.GalleryItem;
-import com.jmarkstar.mfc.model.GalleryItemType;
+import com.jmarkstar.mfc.model.MediaFile;
+import com.jmarkstar.mfc.model.MediaFileType;
 import com.jmarkstar.mfc.util.Constants;
 import java.io.File;
 import java.util.ArrayList;
@@ -25,19 +25,19 @@ class GalleryUtils {
         this.mContext = mContext;
     }
 
-    List<Bucket> getBucketsByItemType(@NonNull GalleryItemType type){
+    List<Bucket> getBucketsByItemType(@NonNull MediaFileType type){
 
         List<Bucket> buckets = new ArrayList<>();
         Uri uri = null;
         String [] projection = new String[2];
         String orderBy = Constants.EMPTY;
 
-        if(type == GalleryItemType.IMAGE){
+        if(type == MediaFileType.IMAGE){
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             projection[0] = MediaStore.Images.Media.BUCKET_DISPLAY_NAME;
             projection[1] = MediaStore.Images.Media.DATA;
             orderBy = MediaStore.Images.Media.DATE_ADDED+" DESC";
-        }else if(type == GalleryItemType.VIDEO){
+        }else if(type == MediaFileType.VIDEO){
             uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
             projection[0] = MediaStore.Video.Media.BUCKET_DISPLAY_NAME;
             projection[1] = MediaStore.Video.Media.DATA;
@@ -62,20 +62,20 @@ class GalleryUtils {
         return buckets;
     }
 
-    public List<GalleryItem> getGalleryItemsByBucket(@NonNull String bucketName, @NonNull GalleryItemType type){
+    public List<MediaFile> getGalleryItemsByBucket(@NonNull String bucketName, @NonNull MediaFileType type){
 
         Uri uri = null;
         String [] projection = new String[2];
         String selection = Constants.EMPTY;
         String orderBy = Constants.EMPTY;
 
-        if(type == GalleryItemType.IMAGE){
+        if(type == MediaFileType.IMAGE){
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             projection[0] = MediaStore.Images.Media.DISPLAY_NAME;
             projection[1] = MediaStore.Images.Media.DATA;
             selection = MediaStore.Images.Media.BUCKET_DISPLAY_NAME+" =?";
             orderBy = MediaStore.Images.Media.DATE_ADDED+" DESC";
-        }else if(type == GalleryItemType.VIDEO){
+        }else if(type == MediaFileType.VIDEO){
             uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
             projection[0] = MediaStore.Video.Media.DISPLAY_NAME;
             projection[1] = MediaStore.Video.Media.DATA;
@@ -83,7 +83,7 @@ class GalleryUtils {
             orderBy = MediaStore.Video.Media.DATE_ADDED+" DESC";
         }
 
-        List<GalleryItem> images = new ArrayList<>();
+        List<MediaFile> images = new ArrayList<>();
 
         Cursor cursor = mContext.getContentResolver().query(uri, projection, selection,new String[]{bucketName}, orderBy);
 
@@ -95,7 +95,7 @@ class GalleryUtils {
                 file = new File(path);
                 if (file.exists() && !imageSet.contains(path)) {
                     imageSet.add(path);
-                    images.add(new GalleryItem(path, type));
+                    images.add(new MediaFile(path, type));
                 }
             }
             cursor.close();

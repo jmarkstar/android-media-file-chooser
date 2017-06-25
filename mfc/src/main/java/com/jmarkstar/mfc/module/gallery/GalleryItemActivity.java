@@ -16,8 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import com.jmarkstar.mfc.MfcDialog;
 import com.jmarkstar.mfc.R;
-import com.jmarkstar.mfc.model.GalleryItem;
-import com.jmarkstar.mfc.model.GalleryItemType;
+import com.jmarkstar.mfc.model.MediaFile;
+import com.jmarkstar.mfc.model.MediaFileType;
 import com.jmarkstar.mfc.util.MfcUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,15 +34,15 @@ public class GalleryItemActivity extends AppCompatActivity
 
     private GalleryItemAdapter mAdapter;
     private MfcDialog.Builder mBuilder;
-    private GalleryItemType mType;
-    private ArrayList<GalleryItem> mSelectedGalleryItems;
+    private MediaFileType mType;
+    private ArrayList<MediaFile> mSelectedGalleryItems;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_item);
 
         mBuilder = (MfcDialog.Builder)getIntent().getSerializableExtra(MfcDialog.BUILDER_TAG);
-        mType = (GalleryItemType)getIntent().getSerializableExtra(MfcDialog.ITEM_TYPE);
+        mType = (MediaFileType)getIntent().getSerializableExtra(MfcDialog.ITEM_TYPE);
         mSelectedGalleryItems = getIntent().getParcelableArrayListExtra(MfcDialog.SELECTED_GALLERY_ITEMS);
         String bucketName = getIntent().getStringExtra(MfcDialog.BUCKET_NAME);
 
@@ -66,11 +66,11 @@ public class GalleryItemActivity extends AppCompatActivity
         });
 
         GalleryUtils galleryUtils = new GalleryUtils(this);
-        List<GalleryItem> galleryItems = galleryUtils.getGalleryItemsByBucket(bucketName, mType);
+        List<MediaFile> galleryItems = galleryUtils.getGalleryItemsByBucket(bucketName, mType);
         Log.v(TAG, "gallery items size = "+galleryItems.size());
         Log.v(TAG, "selected items size = "+mSelectedGalleryItems.size());
-        for(GalleryItem selectedItem : mSelectedGalleryItems){
-            for(GalleryItem item: galleryItems){
+        for(MediaFile selectedItem : mSelectedGalleryItems){
+            for(MediaFile item: galleryItems){
                 if(selectedItem.getPathName().equals(item.getPathName())){
                     item.setSelected(true);
                     break;
@@ -91,9 +91,9 @@ public class GalleryItemActivity extends AppCompatActivity
         if(mSelectedGalleryItems!=null && mSelectedGalleryItems.size()>0){
             mToolbar.setTitle(String.valueOf(mSelectedGalleryItems.size()));
         }else{
-            if(mType == GalleryItemType.IMAGE){
+            if(mType == MediaFileType.IMAGE){
                 mToolbar.setTitle(getString(R.string.gallery_select_images));
-            }else if(mType == GalleryItemType.VIDEO){
+            }else if(mType == MediaFileType.VIDEO){
                 mToolbar.setTitle(getString(R.string.gallery_select_videos));
             }
         }
@@ -121,7 +121,7 @@ public class GalleryItemActivity extends AppCompatActivity
         finish();
     }
 
-    @Override public void onItemClick(GalleryItem galleryItem) {
+    @Override public void onItemClick(MediaFile galleryItem) {
         if(galleryItem.isSelected()){
             galleryItem.setSelected(false);
             mSelectedGalleryItems.remove(galleryItem);

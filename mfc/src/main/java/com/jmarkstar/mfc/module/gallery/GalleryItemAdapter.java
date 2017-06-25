@@ -7,10 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.jmarkstar.mfc.R;
-import com.jmarkstar.mfc.model.GalleryItem;
+import com.jmarkstar.mfc.model.MediaFile;
+
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ import java.util.List;
  */
 class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.GalleryItemVH> {
 
-    private List<GalleryItem> mGalleryItems;
+    private List<MediaFile> mGalleryItems;
     private Context mContext;
     private OnGalleryItemClickListener onGalleryItemClickListener;
 
@@ -30,7 +31,7 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.Gallery
         this.mContext = context;
     }
 
-    public void addGalleryItems(List<GalleryItem> galleryItems){
+    public void addGalleryItems(List<MediaFile> galleryItems){
         this.mGalleryItems = galleryItems;
     }
 
@@ -40,7 +41,7 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.Gallery
     }
 
     @Override public void onBindViewHolder(GalleryItemVH holder, int position) {
-        final GalleryItem galleryItem = mGalleryItems.get(position);
+        final MediaFile galleryItem = mGalleryItems.get(position);
         Glide.with(mContext).load("file://"+galleryItem.getPathName()).override(300,300).centerCrop().into(holder.ivImage);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -78,6 +79,6 @@ class GalleryItemAdapter extends RecyclerView.Adapter<GalleryItemAdapter.Gallery
     }
 
     interface OnGalleryItemClickListener{
-        void onItemClick(GalleryItem galleryItem);
+        void onItemClick(MediaFile galleryItem);
     }
 }

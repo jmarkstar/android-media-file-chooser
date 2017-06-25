@@ -9,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import com.jmarkstar.mfc.MfcDialog;
-import com.jmarkstar.mfc.model.GalleryItem;
+import com.jmarkstar.mfc.model.MediaFile;
+
 import java.util.List;
 
 /**
@@ -33,9 +34,9 @@ public class MainFragment extends Fragment implements MfcDialog.OnMfcResultListe
         return view;
     }
 
-    @Override public void onMfcResult(List<GalleryItem> items) {
+    @Override public void onMfcResult(List<MediaFile> items) {
         Log.v(TAG, "galleryItems size = "+items.size());
-        for(GalleryItem item : items){
+        for(MediaFile item : items){
             Log.v(TAG, item.toString());
         }
     }
