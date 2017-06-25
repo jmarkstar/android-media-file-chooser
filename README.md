@@ -2,7 +2,7 @@
 
 
 # android-media-file-chooser
-&lt;in Process>, Im going to develop a library to pick media files for android following those especifications https://developer.android.com/guide/topics/media/media-formats.html.
+Library to pick media files. take pictures and record videos for android following those especifications https://developer.android.com/guide/topics/media/media-formats.html.
 
 
 
@@ -21,6 +21,6 @@ Step 2. Add the dependency
 
 ```gradle
 dependencies {
-    compile 'com.github.jmarkstar:android-media-file-chooser:0.1.0.alpha'
+    compile 'com.github.jmarkstar:android-media-file-chooser:0.1.1.alpha'
  }
  ```
